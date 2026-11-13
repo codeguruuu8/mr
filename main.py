@@ -151,4 +151,5 @@ def check_tokens(message):
             msg += f"❌ Invalid or banned token\n"
     bot.reply_to(message, msg)
 
-bot.polling()parse_mode="MarkdownV2")
+bot.polling()
+
