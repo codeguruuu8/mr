@@ -139,23 +139,16 @@ bot.polling()parse_mode="MarkdownV2")
         error_msg = escape_markdown(str(e), version=2)
         bot.reply_to(m, f"❌ Invalid token:\n`{error_msg}`", parse_mode="MarkdownV2")
 
-@bot.message_handler(commands=["check"])
-def check_tokens(m):
-    active = 0
-    banned = 0
+@bot.message_handler(commands=['check'])
+def check_tokens(message):
+    msg = "🧪 Token Check Results:\n"
     for token in TOKENS:
-        headers = {"Authorization": f"Bearer {token}"}
-        r = requests.get("https://api.github.com/user", headers=headers)
-        if r.status_code == 200:
-            active += 1
-        else:
-            banned += 1
-    total = len(TOKENS)
-    bot.reply_to(m, f"""👤 *GitHub Token Status*  
-━━━━━━━━━━━━━━━  
-✅ Active: {active}  
-❌ Banned: {banned}  
-🔢 Total: {total}  
-━━━━━━━━━━━━━━━""", parse_mode="Markdown")
+        try:
+            g = Github(token)
+            user = g.get_user()
+            msg += f"✅ {user.login}\n"
+        except:
+            msg += f"❌ Invalid or banned token\n"
+    bot.reply_to(message, msg)
 
-bot.polling()
+bot.polling()   # ← file ends here
